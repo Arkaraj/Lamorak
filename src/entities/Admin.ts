@@ -12,21 +12,15 @@ import { Address } from "./Address";
 import { Order } from "./Order";
 
 @Entity()
-export class User extends BaseEntity {
+export class Admin extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
-  uid: string;
+  Adminid: string;
 
   @Column("varchar", { unique: true, length: 150 })
   email: string;
 
   @Column("text")
-  userName: string;
-
-  @Column("text")
-  password: string;
-
-  @Column({ default: 0.0 })
-  balance: number;
+  name: string;
 
   @OneToMany(() => Order, (ord) => ord.Oid)
   Order: Promise<Order[]>;

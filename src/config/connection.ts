@@ -9,7 +9,8 @@ const connection = createConnection({
   database: `${process.env.SQL_Database}`,
   entities: ["src/entities/*.ts"],
   logging: true,
-  synchronize: true,
+  synchronize: false,
+  migrations: ["src/migration/**/*.ts"],
 })
   .then((connect) => {
     console.log(`Connected to DB sucessfully ${connect.name}`);

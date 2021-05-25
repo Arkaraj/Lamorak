@@ -1,35 +1,35 @@
 import {
   Entity,
+  BaseEntity,
   PrimaryGeneratedColumn,
   Column,
-  BaseEntity,
   OneToMany,
   OneToOne,
   JoinColumn,
 } from "typeorm";
 import { Address } from "./Address";
-
+import { Food } from "./Food";
 import { Order } from "./Order";
 
 @Entity()
-export class User extends BaseEntity {
+export class Restaurant extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
-  uid: string;
-
-  @Column("varchar", { unique: true, length: 150 })
-  email: string;
+  Rid: string;
 
   @Column("text")
-  userName: string;
+  name: string;
 
   @Column("text")
-  password: string;
+  tag: string;
 
-  @Column({ default: 0.0 })
-  balance: number;
+  @Column("boolean", { default: true })
+  available: boolean;
+
+  @OneToMany(() => Food, (food) => food.Fid)
+  items: Promise<Food[]>;
 
   @OneToMany(() => Order, (ord) => ord.Oid)
-  Order: Promise<Order[]>;
+  Orders: Promise<Order[]>;
 
   @OneToOne(() => Address, (addr) => addr.Addressid)
   @JoinColumn()
