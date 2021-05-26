@@ -4,5 +4,6 @@ declare namespace NodeJS {
     SQL_Username: string;
     SQL_Password: string;
     SQL_Database: string;
+    SECRET: string;
   }
 }
