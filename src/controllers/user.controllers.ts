@@ -5,15 +5,20 @@ import bcrypt from "bcrypt";
 
 // Models
 import { User } from "../entities/User";
+import { Address } from "../entities/Address";
+import { Restaurant } from "../entities/Restaurant";
+import { Food } from "../entities/Food";
+import { Order } from "../entities/Order";
 
 const signToken = (id: string) => {
   return JWT.sign(
     {
       iss: "https://github.com/Arkaraj",
       sub: id,
+      isAdmin: false,
     },
     `${process.env.SECRET}`,
-    { expiresIn: "1h" }
+    { expiresIn: "30d" }
   ); // '30d'
 };
 
@@ -117,4 +122,84 @@ export default {
 
     res.status(200).json({ msg: "Logged out", user: {}, success: true });
   },
+
+  addAddress: async (req: any, res: Response) => {
+    // add Address
+    const {
+      city,
+      state,
+      Country,
+      location,
+      pincode,
+    }: {
+      city: string;
+      state: string;
+      Country: string;
+      location: string;
+      pincode: string;
+    } = req.body;
+
+    const addressRepo = getRepository(Address);
+
+    const newAddress = addressRepo.create({
+      city,
+      state,
+      Country,
+      location,
+      pincode,
+    });
+
+    // const newAddress = addressRepo.create(req.body);
+
+    await addressRepo
+      .save(newAddress)
+      .catch((err) => {
+        res.status(500).json({
+          message: { msg: "Error has occured", msgError: true, err },
+        });
+      })
+      .then(async (address) => {
+        const userRepo = getRepository(User);
+
+        const user = await userRepo.findOne(req.user.uid);
+        if (user && address) {
+          user.address = address;
+        }
+        await user?.save();
+
+        res.status(200).json({ address, user });
+      });
+  },
+  showUserMenu: async (_req: Request, _res: Response) => {
+    // Showcase foods/items based on user's location/city
+  },
+  showUserSpecificResturant: async (req: Request, res: Response) => {
+    const resturantId = req.params.resturantId;
+
+    const resturant = await Restaurant.findOne(resturantId);
+
+    res.status(200).json({ resturant });
+  },
+  showUserSpecificFoodItem: async (req: Request, res: Response) => {
+    const FoodId = req.params.FoodId;
+
+    const foodItem = await Food.findOne(FoodId);
+
+    res.status(200).json({ foodItem });
+  },
+  userOrderFood: async (_req: Request, _res: Response) => {},
+  userGetAllOrders: async (req: any, res: Response) => {
+    const order = await Order.find({
+      where: { uid: req.user.uid },
+      order: { Oid: "DESC" },
+    });
+
+    res.status(200).json({ order });
+  },
+  userViewSpecificOrder: async (req: Request, res: Response) => {
+    const order = await Order.findOne(req.params.OrderId);
+
+    res.status(200).json({ order });
+  },
+  userCancelSpecificOrder: async (_req: Request, _res: Response) => {},
 };

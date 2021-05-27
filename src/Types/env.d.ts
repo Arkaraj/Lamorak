@@ -7,3 +7,9 @@ declare namespace NodeJS {
     SECRET: string;
   }
 }
+
+declare namespace Express {
+  export interface Request {
+    user?: any;
+  }
+}

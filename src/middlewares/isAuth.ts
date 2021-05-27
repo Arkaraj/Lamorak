@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy as JWTStrategy } from "passport-jwt";
 import { Request } from "express";
 import { User } from "../entities/User";
+import { Admin } from "../entities/Admin";
 
 const cookieExtractor = (req: Request) => {
   let token = null;
@@ -19,16 +20,30 @@ passport.use(
       secretOrKey: `${process.env.SECRET}`,
     },
     async (payload, done) => {
-      try {
-        const user = await User.findOne(payload.sub);
-        // const user = await User.find({ where: { uid: payload.sub } });
-        if (user) {
-          return done(null, user);
-        } else {
-          done(null, false);
+      if (!payload.isAdmin) {
+        try {
+          const user = await User.findOne(payload.sub);
+          // const user = await User.find({ where: { uid: payload.sub } });
+          if (user) {
+            return done(null, user);
+          } else {
+            done(null, false);
+          }
+        } catch (err) {
+          return done(err, false);
         }
-      } catch (err) {
-        return done(err, false);
+      } else {
+        try {
+          const admin = await Admin.findOne(payload.sub);
+          // const user = await User.find({ where: { uid: payload.sub } });
+          if (admin) {
+            return done(null, admin);
+          } else {
+            done(null, false);
+          }
+        } catch (err) {
+          return done(err, false);
+        }
       }
     }
   )

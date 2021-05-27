@@ -33,5 +33,5 @@ export class User extends BaseEntity {
 
   @OneToOne(() => Address, (addr) => addr.Addressid)
   @JoinColumn()
-  address: Promise<Address>;
+  address: Address;
 }

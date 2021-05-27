@@ -19,9 +19,11 @@ app.use(morgan);
 
 //Importing routes
 import userRoute from "./routes/user.routes";
+import adminRoute from "./routes/admin.routes";
 
 //Routes
 app.use("/api/users", userRoute);
+app.use("/api/admins", adminRoute);
 
 app.get("/", (_req, res) => {
   res.send("Lamorak Backend for Food Delivery app");
