@@ -55,20 +55,20 @@ export class Order extends BaseEntity {
 
   @ManyToOne(() => User, (usr) => usr.Order)
   @JoinColumn({ name: "uid" })
-  user: Promise<User>;
+  user: User;
 
   @OneToMany(() => Food, (food) => food.Fid)
-  Items: Promise<Food[]>;
+  Items: Food[];
 
   @ManyToOne(() => Admin, (admin) => admin.Order)
   @JoinColumn({ name: "adminId" })
-  admin: Promise<Admin>;
+  admin: Admin;
 
   @ManyToOne(() => Restaurant, (rst) => rst.Orders)
   @JoinColumn({ name: "Rid" })
-  Restaurant: Promise<Restaurant>;
+  Restaurant: Restaurant;
 
   @ManyToOne(() => Delivery_Person, (DP) => DP.orderId)
   @JoinColumn({ name: "DPId" })
-  Delivery_Person: Promise<Delivery_Person>;
+  Delivery_Person: Delivery_Person;
 }

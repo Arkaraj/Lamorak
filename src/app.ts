@@ -9,6 +9,7 @@ app.use(express.json());
 app.use(cors({ origin: "*" }));
 
 // Connect to database here
+import "reflect-metadata";
 import "./config/connection";
 
 // use all the middlewires

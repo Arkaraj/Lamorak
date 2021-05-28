@@ -23,9 +23,10 @@ export class Admin extends BaseEntity {
   name: string;
 
   @OneToMany(() => Order, (ord) => ord.Oid)
-  Order: Promise<Order[]>;
+  Order: Order[];
 
+  // address: Promise<Address>;
   @OneToOne(() => Address, (addr) => addr.Addressid)
   @JoinColumn()
-  address: Promise<Address>;
+  address: Address;
 }

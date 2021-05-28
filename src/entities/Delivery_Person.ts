@@ -16,5 +16,5 @@ export class Delivery_Person extends BaseEntity {
   name: string;
 
   @OneToMany(() => Order, (ord) => ord.Oid)
-  orderId: Promise<Order[]>;
+  orderId: Order[];
 }

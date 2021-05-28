@@ -29,7 +29,7 @@ export class User extends BaseEntity {
   balance: number;
 
   @OneToMany(() => Order, (ord) => ord.Oid)
-  Order: Promise<Order[]>;
+  Order: Order[];
 
   @OneToOne(() => Address, (addr) => addr.Addressid)
   @JoinColumn()

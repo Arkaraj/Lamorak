@@ -17,7 +17,7 @@ router.delete("/logout", auth, userController.logoutUser);
 router.post("/address", auth, userController.addAddress);
 // This route may contain Queries
 // Show nearby resturants & food dishes match with address location
-router.get("/menu", auth, userController.showUserMenu);
+router.get("/menu/show", auth, userController.showUserMenu);
 
 router.get(
   "/resturant/:resturantId",

@@ -26,12 +26,12 @@ export class Restaurant extends BaseEntity {
   available: boolean;
 
   @OneToMany(() => Food, (food) => food.Fid)
-  items: Promise<Food[]>;
+  items: Food[];
 
   @OneToMany(() => Order, (ord) => ord.Oid)
-  Orders: Promise<Order[]>;
+  Orders: Order[];
 
   @OneToOne(() => Address, (addr) => addr.Addressid)
   @JoinColumn()
-  address: Promise<Address>;
+  address: Address;
 }

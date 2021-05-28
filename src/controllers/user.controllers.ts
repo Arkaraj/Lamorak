@@ -9,6 +9,8 @@ import { Address } from "../entities/Address";
 import { Restaurant } from "../entities/Restaurant";
 import { Food } from "../entities/Food";
 import { Order } from "../entities/Order";
+import { getUserWithAddress } from "../ControllerUtils/userUtils";
+import { getRestaurantFoodItemsByCities } from "../ControllerUtils/restaurantUtils";
 
 const signToken = (id: string) => {
   return JWT.sign(
@@ -170,8 +172,19 @@ export default {
         res.status(200).json({ address, user });
       });
   },
-  showUserMenu: async (_req: Request, _res: Response) => {
+  showUserMenu: async (req: any, res: Response) => {
     // Showcase foods/items based on user's location/city
+
+    const user = await getUserWithAddress(req);
+
+    const city = user?.address.city;
+    if (city) {
+      const restaurantAndFood = await getRestaurantFoodItemsByCities(city);
+
+      res.status(200).json({ restaurantAndFood });
+    } else {
+      res.status(200).json({ msg: "Please Register your Address" });
+    }
   },
   showUserSpecificResturant: async (req: Request, res: Response) => {
     const resturantId = req.params.resturantId;

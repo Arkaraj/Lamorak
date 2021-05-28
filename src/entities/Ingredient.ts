@@ -18,5 +18,5 @@ export class Ingredient extends BaseEntity {
 
   @ManyToMany(() => Food, (food) => food.Fid)
   @JoinTable()
-  Fid: Promise<Food[]>;
+  Fid: Food[];
 }
