@@ -6,6 +6,7 @@ import {
   ManyToMany,
   JoinTable,
   ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { Ingredient } from "./Ingredient";
 import { Restaurant } from "./Restaurant";
@@ -27,7 +28,12 @@ export class Food extends BaseEntity {
   @Column("float")
   price: number;
 
+  // F i misspelled it lol
+  @Column("text")
+  resturantId: string;
+
   @ManyToOne(() => Restaurant, (rest) => rest.items)
+  @JoinColumn({ name: "resturantId" })
   restaurant: Restaurant;
 
   @ManyToMany(() => Ingredient, (ingred) => ingred.Ingid)

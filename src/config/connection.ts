@@ -24,6 +24,7 @@ const main = async () => {
     .then(async (connect) => {
       // await connect.runMigrations();
       console.log(`Connected to DB sucessfully ${connect.name}`);
+
       return connect;
     })
     .catch((err) => {
