@@ -178,6 +178,7 @@ export default {
     const user = await getUserWithAddress(req);
 
     const city = user?.address.city;
+
     if (city) {
       const restaurantAndFood = await getRestaurantFoodItemsByCities(city);
 

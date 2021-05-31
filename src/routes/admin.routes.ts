@@ -17,6 +17,12 @@ router.post("/login", adminController.loginAdmin);
 router.get("/", auth, isAdmin, adminController.viewAdmin);
 router.post("/createRestaurant", auth, isAdmin, adminController.addRestaurant);
 router.post(
+  "/addAddressToRest/:rId",
+  auth,
+  isAdmin,
+  adminController.addAddressToRestaurant
+);
+router.post(
   "/createFood/:restaurantId",
   auth,
   isAdmin,

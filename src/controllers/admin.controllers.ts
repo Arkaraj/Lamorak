@@ -6,6 +6,7 @@ import { Food } from "../entities/Food";
 import { Restaurant } from "../entities/Restaurant";
 import { getRepository } from "typeorm";
 import { Address } from "../entities/Address";
+import { FoodIngredient } from "../entities/FoodIngredient";
 
 const signToken = (id: string) => {
   return JWT.sign(
@@ -44,9 +45,67 @@ export default {
     });
   },
   viewAdmin: async (_req: Request, _res: Response) => {},
-  addRestaurant: async (_req: Request, _res: Response) => {},
+  addRestaurant: async (req: Request, res: Response) => {
+    const { name, tag }: { name: string; tag: string } = req.body;
+
+    const restaurant = await Restaurant.create({
+      name,
+      tag,
+      available: true,
+      items: [],
+      Orders: [],
+    }).save();
+
+    res.status(200).json({ restaurant });
+  },
+  addAddressToRestaurant: async (req: Request, res: Response) => {
+    const {
+      city,
+      state,
+      Country,
+      location,
+      pincode,
+    }: {
+      city: string;
+      state: string;
+      Country: string;
+      location: string;
+      pincode: string;
+    } = req.body;
+
+    const addressRepo = getRepository(Address);
+
+    const newAddress = addressRepo.create({
+      city,
+      state,
+      Country,
+      location,
+      pincode,
+    });
+
+    // const newAddress = addressRepo.create(req.body);
+
+    await addressRepo
+      .save(newAddress)
+      .catch((err) => {
+        res.status(500).json({
+          message: { msg: "Error has occured", msgError: true, err },
+        });
+      })
+      .then(async (address) => {
+        const restRepo = getRepository(Restaurant);
+
+        const restaurant = await restRepo.findOne(req.params.rId);
+        if (restaurant && address) {
+          restaurant.address = address;
+        }
+        await restaurant?.save();
+
+        res.status(200).json({ address, restaurant });
+      });
+  },
   addDish: async (req: Request, res: Response) => {
-    const { restaurantId: resturantId } = req.params;
+    const { restaurantId } = req.params;
 
     const {
       name,
@@ -60,7 +119,7 @@ export default {
       price: number;
     } = req.body;
 
-    const restaurant = await Restaurant.findOne(resturantId);
+    const restaurant = await Restaurant.findOne(restaurantId);
 
     if (restaurant) {
       const food = await Food.create({
@@ -68,14 +127,13 @@ export default {
         description,
         quantity,
         price,
-        resturantId,
-        Ingredient: [],
+        restaurantId,
+        IngredientConnection: [],
       }).save();
       // food.restaurant = restaurant
       // await food.save()
 
-      restaurant.items = [...restaurant.items, food];
-      await restaurant.save();
+      food.restaurant = restaurant;
 
       res.status(200).json({ food, restaurant });
     } else {
@@ -88,8 +146,6 @@ export default {
     const ingredient = await Ingredient.create({ name }).save();
 
     res.status(200).json({ ingredient, msg: "Created Ingredient" });
-
-    res.status(200).json({ msg: "Gonna add ingredient" });
   },
   addAddress: async (req: any, res: Response) => {
     const {
@@ -178,8 +234,14 @@ export default {
     const ingredient = await Ingredient.findOne(IngId);
 
     if (food && ingredient) {
-      food.Ingredient = [...food.Ingredient, ingredient];
-      ingredient.Fid = [...ingredient.Fid, food];
+      FoodIngredient.create({
+        FoodId: foodId,
+        IngredientId: IngId,
+        Food: food,
+        Ingredient: ingredient,
+      });
+      // food.Ingredient = [...food.Ingredient, ingredient];
+      // ingredient.Fid = [...ingredient.Fid, food];
 
       await food.save();
       await ingredient.save();

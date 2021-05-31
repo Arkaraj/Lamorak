@@ -3,10 +3,9 @@ import {
   PrimaryGeneratedColumn,
   Column,
   BaseEntity,
-  ManyToMany,
-  JoinTable,
+  OneToMany,
 } from "typeorm";
-import { Food } from "./Food";
+import { FoodIngredient } from "./FoodIngredient";
 
 @Entity()
 export class Ingredient extends BaseEntity {
@@ -16,7 +15,6 @@ export class Ingredient extends BaseEntity {
   @Column("text")
   name: string;
 
-  @ManyToMany(() => Food, (food) => food.Fid)
-  @JoinTable()
-  Fid: Food[];
+  @OneToMany(() => FoodIngredient, (fi) => fi.FoodId)
+  FoodConnection: FoodIngredient[];
 }

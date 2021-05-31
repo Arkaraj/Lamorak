@@ -2,7 +2,7 @@
 
 Backend for Food Delivery App
 
-🚧🚧 Work on Progress... 🚧🚧
+🚧🚧 Work in Progress... 🚧🚧
 
 ## Tech Stack
 

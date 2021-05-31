@@ -8,9 +8,10 @@ export const getRestaurantFoodItemsByCities = async (
   const restaurantAndFood = await getRepository(Restaurant)
     .createQueryBuilder("restaurant")
     .leftJoinAndSelect("restaurant.address", "address")
-    // .leftJoinAndSelect("restaurant.items", "items") // not working
+    .leftJoinAndSelect("restaurant.items", "items") // not working
     .where("restaurant.available = :available", { available: true })
     .andWhere("address.city = :city", { city })
+    .andWhere("items.available = :available", { available: true })
     .getMany();
 
   return restaurantAndFood;

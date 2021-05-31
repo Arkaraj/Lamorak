@@ -3,13 +3,13 @@ import {
   BaseEntity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToMany,
-  JoinTable,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
-import { Ingredient } from "./Ingredient";
+import { FoodIngredient } from "./FoodIngredient";
 import { Restaurant } from "./Restaurant";
+import { User } from "./User";
 
 @Entity()
 export class Food extends BaseEntity {
@@ -28,15 +28,21 @@ export class Food extends BaseEntity {
   @Column("float")
   price: number;
 
-  // F i misspelled it lol
   @Column("text")
-  resturantId: string;
+  restaurantId: string;
+
+  @Column("boolean", { default: true })
+  available: boolean;
 
   @ManyToOne(() => Restaurant, (rest) => rest.items)
-  @JoinColumn({ name: "resturantId" })
+  @JoinColumn({ name: "restaurantId" })
   restaurant: Restaurant;
 
-  @ManyToMany(() => Ingredient, (ingred) => ingred.Ingid)
-  @JoinTable()
-  Ingredient: Ingredient[];
+  @OneToMany(() => FoodIngredient, (fi) => fi.IngredientId)
+  IngredientConnection: FoodIngredient[];
+
+  @ManyToOne(() => User, (usr) => usr.cart)
+  // @JoinColumn({ name: "user_id" })
+  @JoinColumn()
+  user: User;
 }

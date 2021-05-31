@@ -25,7 +25,7 @@ export class Restaurant extends BaseEntity {
   @Column("boolean", { default: true })
   available: boolean;
 
-  @OneToMany(() => Food, (food) => food.Fid)
+  @OneToMany(() => Food, (food) => food.restaurant)
   items: Food[];
 
   @OneToMany(() => Order, (ord) => ord.Oid)

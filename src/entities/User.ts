@@ -8,6 +8,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { Address } from "./Address";
+import { Food } from "./Food";
 
 import { Order } from "./Order";
 
@@ -27,6 +28,10 @@ export class User extends BaseEntity {
 
   @Column({ default: 0.0 })
   balance: number;
+
+  // Real Life it should be Many To Many
+  @OneToMany(() => Food, (f) => f.user)
+  cart: Food[];
 
   @OneToMany(() => Order, (ord) => ord.Oid)
   Order: Order[];
