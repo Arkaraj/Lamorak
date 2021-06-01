@@ -7,10 +7,14 @@ import bcrypt from "bcrypt";
 import { User } from "../entities/User";
 import { Address } from "../entities/Address";
 import { Restaurant } from "../entities/Restaurant";
-import { Food } from "../entities/Food";
 import { Order } from "../entities/Order";
-import { getUserWithAddress } from "../ControllerUtils/userUtils";
+import {
+  addToCart,
+  getUserCartItems,
+  getUserWithAddress,
+} from "../ControllerUtils/userUtils";
 import { getRestaurantFoodItemsByCities } from "../ControllerUtils/restaurantUtils";
+import { queryFoodsIngredients } from "../ControllerUtils/FoodIngredientUtils";
 
 const signToken = (id: string) => {
   return JWT.sign(
@@ -197,9 +201,26 @@ export default {
   showUserSpecificFoodItem: async (req: Request, res: Response) => {
     const FoodId = req.params.FoodId;
 
-    const foodItem = await Food.findOne(FoodId);
+    const foodItem = await queryFoodsIngredients(FoodId);
 
     res.status(200).json({ foodItem });
+  },
+  userAddToCart: async (req: any, res: Response) => {
+    const foodId = req.params.FoodId;
+    const userId = req.user.uid;
+
+    const food = await addToCart(userId, foodId);
+
+    res.status(200).json({ food, msg: "Added To Cart" });
+  },
+  viewCartItems: async (req: any, res: Response) => {
+    const user = await getUserCartItems(req);
+
+    if (user) {
+      res.status(200).json({ user });
+    } else {
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
   },
   userOrderFood: async (_req: Request, _res: Response) => {},
   userGetAllOrders: async (req: any, res: Response) => {

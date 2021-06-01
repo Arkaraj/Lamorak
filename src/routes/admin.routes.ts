@@ -47,4 +47,41 @@ router.post(
   adminController.addIngredientToFood
 );
 
+// Remove Ingredients to Food
+router.delete(
+  "foodingredient/:foodId/:IngId",
+  auth,
+  isAdmin,
+  adminController.removeIngredientToFood
+);
+
+// get All restaurants
+router.get("/restaurants", auth, isAdmin, adminController.getAllRestaurant);
+// get All the foods
+router.get("/food", auth, isAdmin, adminController.getAllDishes);
+// get All the ingredients
+router.get("/ingredients", auth, isAdmin, adminController.getAllIngredients);
+
+// delete restaurants
+router.delete(
+  "/restaurants/:rId",
+  auth,
+  isAdmin,
+  adminController.DeleteSpecificRestaurant
+);
+// delete foods
+router.delete(
+  "/food/:foodId",
+  auth,
+  isAdmin,
+  adminController.DeleteSpecificFood
+);
+// delete ingredients
+router.delete(
+  "/ingredients/:ingredientId",
+  auth,
+  isAdmin,
+  adminController.DeleteSpecificIngredient
+);
+
 export default router;

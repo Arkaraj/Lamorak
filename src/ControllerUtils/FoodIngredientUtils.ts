@@ -25,3 +25,10 @@ export const queryFoodsIngredients = async (
     .getOne();
   return food;
 };
+
+export const queryAllFoodsAlongWithIngredients = async (): Promise<Food[]> => {
+  return await Food.createQueryBuilder("food")
+    .leftJoinAndSelect("food.IngredientConnection", "ingredients")
+    .leftJoinAndSelect("food.restaurant", "restaurant")
+    .getMany();
+};

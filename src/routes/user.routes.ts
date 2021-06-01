@@ -27,8 +27,14 @@ router.get(
 
 router.get("/item/:FoodId", auth, userController.showUserSpecificFoodItem);
 
+// Add items to cart
+router.post("/cart/:FoodId", auth, userController.userAddToCart);
+
+// See all items in cart
+router.get("/cart/", auth, userController.viewCartItems);
+
 // Order food
-router.post("/order/:FoodId", auth, userController.userOrderFood);
+router.post("/order/", auth, userController.userOrderFood);
 
 // View all orderd items, order history
 router.get("/order", auth, userController.userGetAllOrders);

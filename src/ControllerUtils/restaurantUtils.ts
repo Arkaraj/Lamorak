@@ -1,3 +1,4 @@
+import { Food } from "../entities/Food";
 import { getRepository } from "typeorm";
 import { Restaurant } from "../entities/Restaurant";
 // import { Food } from "../entities/Food";
@@ -8,7 +9,7 @@ export const getRestaurantFoodItemsByCities = async (
   const restaurantAndFood = await getRepository(Restaurant)
     .createQueryBuilder("restaurant")
     .leftJoinAndSelect("restaurant.address", "address")
-    .leftJoinAndSelect("restaurant.items", "items") // not working
+    .leftJoinAndSelect("restaurant.items", "items")
     .where("restaurant.available = :available", { available: true })
     .andWhere("address.city = :city", { city })
     .andWhere("items.available = :available", { available: true })
@@ -27,4 +28,25 @@ export const getRestaurantsByCities = async (
     .getMany();
 
   return restaurant;
+};
+
+export const getAllRestaurants = async (): Promise<Restaurant[]> => {
+  return await getRepository(Restaurant)
+    .createQueryBuilder("restaurant")
+    .leftJoinAndSelect("restaurant.address", "address")
+    .getMany();
+};
+
+export const deleteRestaurant = async (restaurantId: string) => {
+  // Delete all the foods in the Restaurant
+  await getRepository(Food)
+    .createQueryBuilder("food")
+    .delete()
+    .from(Food)
+    .where("food.restaurantId = :restaurantId", { restaurantId })
+    .execute();
+
+  const deletedRestaurant = await Restaurant.delete({ Rid: restaurantId });
+
+  return deletedRestaurant;
 };

@@ -7,6 +7,11 @@ import { Restaurant } from "../entities/Restaurant";
 import { getRepository } from "typeorm";
 import { Address } from "../entities/Address";
 import { FoodIngredient } from "../entities/FoodIngredient";
+import {
+  deleteRestaurant,
+  getAllRestaurants,
+} from "../ControllerUtils/restaurantUtils";
+import { queryAllFoodsAlongWithIngredients } from "../ControllerUtils/FoodIngredientUtils";
 
 const signToken = (id: string) => {
   return JWT.sign(
@@ -234,21 +239,63 @@ export default {
     const ingredient = await Ingredient.findOne(IngId);
 
     if (food && ingredient) {
-      FoodIngredient.create({
+      const food_Ingredient = await FoodIngredient.create({
         FoodId: foodId,
         IngredientId: IngId,
         Food: food,
         Ingredient: ingredient,
-      });
+      }).save();
       // food.Ingredient = [...food.Ingredient, ingredient];
       // ingredient.Fid = [...ingredient.Fid, food];
 
-      await food.save();
-      await ingredient.save();
-
-      res.status(200).json({ food, ingredient });
+      res
+        .status(200)
+        .json({ food, ingredient, food_Ingredient: food_Ingredient });
     } else {
       res.status(500).json({ msg: "Internal Server Error" });
     }
+  },
+  removeIngredientToFood: async (req: Request, res: Response) => {
+    const { foodId, IngId } = req.params;
+
+    const food_Ingredient = await FoodIngredient.delete({
+      FoodId: foodId,
+      IngredientId: IngId,
+    });
+
+    res.status(200).json({ food_Ingredient: food_Ingredient });
+  },
+
+  getAllRestaurant: async (_req: Request, res: Response) => {
+    const restaurant = await getAllRestaurants();
+
+    res.status(200).json({ restaurant });
+  },
+  getAllDishes: async (_req: Request, res: Response) => {
+    const foodList = await queryAllFoodsAlongWithIngredients();
+
+    res.status(200).json({ dishes: foodList });
+  },
+  getAllIngredients: async (_req: Request, res: Response) => {
+    const ingredient = await Ingredient.find();
+    res.status(200).json({ ingredient });
+  },
+
+  DeleteSpecificRestaurant: async (req: Request, res: Response) => {
+    const deletedRestaurant = await deleteRestaurant(req.params.rId);
+
+    res.status(200).json({ deletedRestaurant });
+  },
+  DeleteSpecificFood: async (req: Request, res: Response) => {
+    const Fid = req.params.foodId;
+
+    const deletedFood = await Food.delete({ Fid });
+    res.status(200).json({ deletedFood });
+  },
+  DeleteSpecificIngredient: async (req: Request, res: Response) => {
+    const Ingid = req.params.ingredientId;
+
+    const deletedIngredient = await Ingredient.delete({ Ingid });
+    res.status(200).json({ deletedIngredient });
   },
 };
