@@ -31,13 +31,16 @@ router.get("/item/:FoodId", auth, userController.showUserSpecificFoodItem);
 router.post("/cart/:FoodId", auth, userController.userAddToCart);
 
 // See all items in cart
-router.get("/cart/", auth, userController.viewCartItems);
+router.get("/c/cart", auth, userController.viewCartItems);
+
+// Remove food from cart
+router.delete("/cart/:foodId", auth, userController.removeItemFromCart);
 
 // Order food
-router.post("/order/", auth, userController.userOrderFood);
+router.post("/order", auth, userController.userOrderFood);
 
 // View all orderd items, order history
-router.get("/order", auth, userController.userGetAllOrders);
+router.get("/c/order", auth, userController.userGetAllOrders);
 
 // View specific order
 router.get("/order/:OrderId", auth, userController.userViewSpecificOrder);

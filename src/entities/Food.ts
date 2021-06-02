@@ -41,11 +41,10 @@ export class Food extends BaseEntity {
   @OneToMany(() => FoodIngredient, (fi) => fi.IngredientId)
   IngredientConnection: FoodIngredient[];
 
-  // @Column({nullable: true})
-  // userId: string;
+  @Column("text", { nullable: true })
+  userId: string | null;
 
   @ManyToOne(() => User, (usr) => usr.cart)
-  // @JoinColumn({ name: "userId" })
-  @JoinColumn()
+  @JoinColumn({ name: "userId" })
   user: User;
 }

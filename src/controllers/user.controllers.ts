@@ -6,14 +6,17 @@ import bcrypt from "bcrypt";
 // Models
 import { User } from "../entities/User";
 import { Address } from "../entities/Address";
-import { Restaurant } from "../entities/Restaurant";
 import { Order } from "../entities/Order";
 import {
   addToCart,
   getUserCartItems,
   getUserWithAddress,
+  removeFromCart,
 } from "../ControllerUtils/userUtils";
-import { getRestaurantFoodItemsByCities } from "../ControllerUtils/restaurantUtils";
+import {
+  getRestaurantFoodItemsByCities,
+  getSpecificRestaurant,
+} from "../ControllerUtils/restaurantUtils";
 import { queryFoodsIngredients } from "../ControllerUtils/FoodIngredientUtils";
 
 const signToken = (id: string) => {
@@ -194,7 +197,7 @@ export default {
   showUserSpecificResturant: async (req: Request, res: Response) => {
     const resturantId = req.params.resturantId;
 
-    const resturant = await Restaurant.findOne(resturantId);
+    const resturant = await getSpecificRestaurant(resturantId);
 
     res.status(200).json({ resturant });
   },
@@ -217,7 +220,22 @@ export default {
     const user = await getUserCartItems(req);
 
     if (user) {
-      res.status(200).json({ user });
+      const cartPriceArray = user.cart.map((item) => item.price);
+      const totalPrice = cartPriceArray.reduce((prev, curr) => {
+        return prev + curr;
+      }, 0);
+
+      res.status(200).json({ user, totalPrice });
+    } else {
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
+  },
+  removeItemFromCart: async (req: Request, res: Response) => {
+    const foodId: string = req.params.foodId;
+    const food = await removeFromCart(foodId);
+
+    if (food) {
+      res.status(200).json({ food });
     } else {
       res.status(500).json({ msg: "Internal Server Error" });
     }

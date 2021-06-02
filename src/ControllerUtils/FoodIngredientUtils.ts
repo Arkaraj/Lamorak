@@ -18,17 +18,20 @@ export const deleteIngfromFood = async (Ingid: string) => {
 
 export const queryFoodsIngredients = async (
   FoodId: string
-): Promise<Food | undefined> => {
-  const food = await Food.createQueryBuilder("food")
-    .leftJoinAndSelect("food.IngredientConnection", "ingredients")
-    .where("food.Fid = :FoodId", { FoodId })
-    .getOne();
+): Promise<FoodIngredient[]> => {
+  const food = await FoodIngredient.createQueryBuilder("fi")
+    .leftJoinAndSelect("fi.Food", "food")
+    .leftJoinAndSelect("fi.Ingredient", "ingredient")
+    .where("fi.FoodId = :FoodId", { FoodId })
+    .getMany();
   return food;
 };
 
-export const queryAllFoodsAlongWithIngredients = async (): Promise<Food[]> => {
-  return await Food.createQueryBuilder("food")
-    .leftJoinAndSelect("food.IngredientConnection", "ingredients")
-    .leftJoinAndSelect("food.restaurant", "restaurant")
+export const queryAllFoodsAlongWithIngredients = async (): Promise<
+  FoodIngredient[]
+> => {
+  return await FoodIngredient.createQueryBuilder("fi")
+    .leftJoinAndSelect("fi.Food", "food")
+    .leftJoinAndSelect("fi.Ingredient", "ingredient")
     .getMany();
 };

@@ -26,9 +26,24 @@ export const addToCart = async (userId: string, foodId: string) => {
   const food = await Food.findOne(foodId);
   const user = await User.findOne(userId);
 
-  // food!.userId = user!.uid
-
+  food!.userId = userId;
   food!.user = user!;
+
+  await food!.save();
 
   return food;
 };
+
+export const removeFromCart = async (foodId: string) => {
+  const food = await Food.findOne(foodId);
+
+  food!.userId = null;
+
+  await food!.save();
+
+  return food;
+};
+
+export const ViewOrderedItems = async (userId: string, foodId: string) => {};
+export const OrderItems = async (userId: string) => {};
+export const CancelOrder = async (userId: string, foodId: string) => {};

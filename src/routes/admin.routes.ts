@@ -41,7 +41,7 @@ router.post(
 
 // Add Ingredients to Food
 router.post(
-  "food/:foodId/:IngId",
+  "/foodingredient/:foodId/:IngId",
   auth,
   isAdmin,
   adminController.addIngredientToFood
@@ -49,7 +49,7 @@ router.post(
 
 // Remove Ingredients to Food
 router.delete(
-  "foodingredient/:foodId/:IngId",
+  "/foodingredient/:foodId/:IngId",
   auth,
   isAdmin,
   adminController.removeIngredientToFood
@@ -57,10 +57,23 @@ router.delete(
 
 // get All restaurants
 router.get("/restaurants", auth, isAdmin, adminController.getAllRestaurant);
-// get All the foods
+// get All the foods with ingredients
 router.get("/food", auth, isAdmin, adminController.getAllDishes);
+// get All the foods with ingredients
+router.get(
+  "/foodingredient",
+  auth,
+  isAdmin,
+  adminController.getAllDishesAndIngredients
+);
 // get All the ingredients
 router.get("/ingredients", auth, isAdmin, adminController.getAllIngredients);
+
+// make restaurant unavailable/available
+router.put("/restaurant/:Rid", auth, isAdmin, adminController.restaurantClosed);
+
+// make food unavailable/available
+router.put("/food/:Fid", auth, isAdmin, adminController.dishOver);
 
 // delete restaurants
 router.delete(

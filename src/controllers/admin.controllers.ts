@@ -10,8 +10,10 @@ import { FoodIngredient } from "../entities/FoodIngredient";
 import {
   deleteRestaurant,
   getAllRestaurants,
+  makeRestaurantChange,
 } from "../ControllerUtils/restaurantUtils";
 import { queryAllFoodsAlongWithIngredients } from "../ControllerUtils/FoodIngredientUtils";
+import { makeItemsChange } from "../ControllerUtils/FoodUtils";
 
 const signToken = (id: string) => {
   return JWT.sign(
@@ -266,12 +268,45 @@ export default {
     res.status(200).json({ food_Ingredient: food_Ingredient });
   },
 
+  restaurantClosed: async (req: Request, res: Response) => {
+    const Rid = req.params.Rid;
+    // true or false
+    const { available } = req.body;
+
+    const restaurant = await makeRestaurantChange(Rid, available);
+
+    if (restaurant) {
+      res.status(200).json({ restaurant });
+    } else {
+      res.status(500).json({ msg: "Invalid Restaurant Id given...." });
+    }
+  },
+
+  dishOver: async (req: Request, res: Response) => {
+    const Fid = req.params.Fid;
+    // true or false
+    const { available }: { available: boolean } = req.body;
+
+    const food = await makeItemsChange(Fid, available);
+
+    if (food) {
+      res.status(200).json({ food });
+    } else {
+      res.status(500).json({ msg: "Invalid Food Id given...." });
+    }
+  },
+
   getAllRestaurant: async (_req: Request, res: Response) => {
     const restaurant = await getAllRestaurants();
 
     res.status(200).json({ restaurant });
   },
   getAllDishes: async (_req: Request, res: Response) => {
+    const foodList = await Food.find();
+
+    res.status(200).json({ dishes: foodList });
+  },
+  getAllDishesAndIngredients: async (_req: Request, res: Response) => {
     const foodList = await queryAllFoodsAlongWithIngredients();
 
     res.status(200).json({ dishes: foodList });
