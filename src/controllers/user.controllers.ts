@@ -6,12 +6,15 @@ import bcrypt from "bcrypt";
 // Models
 import { User } from "../entities/User";
 import { Address } from "../entities/Address";
-import { Order } from "../entities/Order";
 import {
   addToCart,
+  CancelOrder,
   getUserCartItems,
   getUserWithAddress,
+  OrderItems,
   removeFromCart,
+  ViewOrderedItems,
+  ViewSpecificOrder,
 } from "../ControllerUtils/userUtils";
 import {
   getRestaurantFoodItemsByCities,
@@ -240,19 +243,45 @@ export default {
       res.status(500).json({ msg: "Internal Server Error" });
     }
   },
-  userOrderFood: async (_req: Request, _res: Response) => {},
+  userOrderFood: async (req: any, res: Response) => {
+    const { orderType } = req.body;
+
+    const order = await OrderItems(req.user.uid, orderType);
+
+    // This is gonna return massive data of Order items, Admin, Delivery Person, all of them from same city
+    res.status(200).json({ order, msg: "Order Placed" });
+  },
   userGetAllOrders: async (req: any, res: Response) => {
-    const order = await Order.find({
-      where: { uid: req.user.uid },
-      order: { Oid: "DESC" },
-    });
+    const order = await ViewOrderedItems(req.user.uid);
 
     res.status(200).json({ order });
   },
   userViewSpecificOrder: async (req: Request, res: Response) => {
-    const order = await Order.findOne(req.params.OrderId);
+    const order = await ViewSpecificOrder(req.params.OrderId);
 
-    res.status(200).json({ order });
+    if (order) {
+      res.status(200).json({ order });
+    } else {
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
   },
-  userCancelSpecificOrder: async (_req: Request, _res: Response) => {},
+  userCancelSpecificOrder: async (req: Request, res: Response) => {
+    const orderId = req.params.OrderId;
+    const { reason } = req.body;
+
+    const order = await CancelOrder(orderId);
+
+    if (order) {
+      res.status(200).json({
+        order,
+        msg: "Order Cancelled, You will be refurbished",
+        reason,
+      });
+    } else {
+      res.status(500).json({
+        msg:
+          "Order not Cancelled, Order Either doesn't exsit or already Delivered",
+      });
+    }
+  },
 };

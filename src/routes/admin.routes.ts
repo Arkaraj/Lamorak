@@ -97,4 +97,8 @@ router.delete(
   adminController.DeleteSpecificIngredient
 );
 
+router.get("/order", auth, isAdmin, adminController.ViewAllOrders);
+router.get("/supervision", auth, isAdmin, adminController.ViewAssignedOrders);
+router.put("/order/:Oid", auth, isAdmin, adminController.ControlOrders);
+
 export default router;

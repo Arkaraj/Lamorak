@@ -333,4 +333,7 @@ export default {
     const deletedIngredient = await Ingredient.delete({ Ingid });
     res.status(200).json({ deletedIngredient });
   },
+  ViewAllOrders: async (__req: Request, _res: Response) => {},
+  ViewAssignedOrders: async (__req: Request, _res: Response) => {},
+  ControlOrders: async (__req: Request, _res: Response) => {},
 };

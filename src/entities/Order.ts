@@ -57,13 +57,14 @@ export class Order extends BaseEntity {
   @JoinColumn({ name: "uid" })
   user: User;
 
-  @OneToMany(() => Food, (food) => food.Fid)
+  @OneToMany(() => Food, (food) => food.order)
   Items: Food[];
 
   @ManyToOne(() => Admin, (admin) => admin.Order)
   @JoinColumn({ name: "adminId" })
   admin: Admin;
 
+  // This is kindda pointless, should be many to many
   @ManyToOne(() => Restaurant, (rst) => rst.Orders)
   @JoinColumn({ name: "Rid" })
   Restaurant: Restaurant;

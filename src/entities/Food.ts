@@ -8,6 +8,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { FoodIngredient } from "./FoodIngredient";
+import { Order } from "./Order";
 import { Restaurant } from "./Restaurant";
 import { User } from "./User";
 
@@ -47,4 +48,11 @@ export class Food extends BaseEntity {
   @ManyToOne(() => User, (usr) => usr.cart)
   @JoinColumn({ name: "userId" })
   user: User;
+
+  @Column("text", { nullable: true })
+  orderId: string | null;
+
+  @ManyToOne(() => Order, (order) => order.Items)
+  @JoinColumn({ name: "orderId" })
+  order: Order;
 }
