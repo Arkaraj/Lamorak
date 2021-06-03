@@ -14,6 +14,8 @@ import {
 } from "../ControllerUtils/restaurantUtils";
 import { queryAllFoodsAlongWithIngredients } from "../ControllerUtils/FoodIngredientUtils";
 import { makeItemsChange } from "../ControllerUtils/FoodUtils";
+import { Order, OrderStatus } from "../entities/Order";
+import { ControlOrder, ViewOrderAssigned } from "../ControllerUtils/adminUtils";
 
 const signToken = (id: string) => {
   return JWT.sign(
@@ -51,7 +53,15 @@ export default {
       }
     });
   },
-  viewAdmin: async (_req: Request, _res: Response) => {},
+  viewAdmin: async (req: any, res: Response) => {
+    const admin = await Admin.findOne(req.user.Adminid);
+
+    if (admin) {
+      res.status(200).json({ admin });
+    } else {
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
+  },
   addRestaurant: async (req: Request, res: Response) => {
     const { name, tag }: { name: string; tag: string } = req.body;
 
@@ -333,7 +343,29 @@ export default {
     const deletedIngredient = await Ingredient.delete({ Ingid });
     res.status(200).json({ deletedIngredient });
   },
-  ViewAllOrders: async (__req: Request, _res: Response) => {},
-  ViewAssignedOrders: async (__req: Request, _res: Response) => {},
-  ControlOrders: async (__req: Request, _res: Response) => {},
+  ViewAllOrders: async (_req: Request, res: Response) => {
+    const order = await Order.find();
+
+    res.status(200).json({ order });
+  },
+  ViewAssignedOrders: async (req: any, res: Response) => {
+    const adminId = req.user.Adminid;
+
+    const order = await ViewOrderAssigned(adminId);
+
+    res.status(200).json({ order });
+  },
+  ControlOrders: async (req: Request, res: Response) => {
+    let { status }: { status: OrderStatus } = req.body;
+
+    const orderId = req.params.Oid;
+
+    const order = await ControlOrder(orderId, status);
+
+    if (order) {
+      res.status(200).json({ order });
+    } else {
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
+  },
 };
