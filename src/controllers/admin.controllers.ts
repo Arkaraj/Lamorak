@@ -10,12 +10,14 @@ import { FoodIngredient } from "../entities/FoodIngredient";
 import {
   deleteRestaurant,
   getAllRestaurants,
+  getSpecificRestaurants,
   makeRestaurantChange,
 } from "../ControllerUtils/restaurantUtils";
 import { queryAllFoodsAlongWithIngredients } from "../ControllerUtils/FoodIngredientUtils";
 import { makeItemsChange } from "../ControllerUtils/FoodUtils";
 import { Order, OrderStatus } from "../entities/Order";
 import { ControlOrder, ViewOrderAssigned } from "../ControllerUtils/adminUtils";
+import { Delivery_Person } from "../entities/Delivery_Person";
 
 const signToken = (id: string) => {
   return JWT.sign(
@@ -146,6 +148,8 @@ export default {
         price,
         restaurantId,
         IngredientConnection: [],
+        userId: null,
+        orderOid: null,
       }).save();
       // food.restaurant = restaurant
       // await food.save()
@@ -311,6 +315,11 @@ export default {
 
     res.status(200).json({ restaurant });
   },
+  getSpecificRestaurant: async (req: Request, res: Response) => {
+    const restaurant = await getSpecificRestaurants(req.params.Rid);
+
+    res.status(200).json({ restaurant });
+  },
   getAllDishes: async (_req: Request, res: Response) => {
     const foodList = await Food.find();
 
@@ -367,5 +376,22 @@ export default {
     } else {
       res.status(500).json({ msg: "Internal Server Error" });
     }
+  },
+  addDeliveryPerson: async (req: Request, res: Response) => {
+    const { name } = req.body;
+
+    const dperson = await Delivery_Person.create({
+      name,
+      available: true,
+    }).save();
+
+    res
+      .status(200)
+      .json({ Delivery_Person: dperson, msg: "Created New Delivery Person" });
+  },
+  ViewDeliveryPerson: async (_req: Request, res: Response) => {
+    const dperson = await Delivery_Person.find();
+
+    res.status(200).json({ Delivery_Person: dperson });
   },
 };

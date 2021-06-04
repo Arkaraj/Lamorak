@@ -48,6 +48,16 @@ export const getAllRestaurants = async (): Promise<Restaurant[]> => {
     .leftJoinAndSelect("restaurant.address", "address")
     .getMany();
 };
+export const getSpecificRestaurants = async (
+  Rid: string
+): Promise<Restaurant[]> => {
+  return await getRepository(Restaurant)
+    .createQueryBuilder("restaurant")
+    .leftJoinAndSelect("restaurant.address", "address")
+    .leftJoinAndSelect("restaurant.items", "foods")
+    .where("restaurant.Rid = :Rid", { Rid })
+    .getMany();
+};
 
 export const makeRestaurantChange = async (Rid: string, available: boolean) => {
   const restaurant = await Restaurant.findOne(Rid);

@@ -50,9 +50,9 @@ export class Food extends BaseEntity {
   user: User;
 
   @Column("text", { nullable: true })
-  orderId: string | null;
+  orderOid: string | null;
 
   @ManyToOne(() => Order, (order) => order.Items)
-  @JoinColumn({ name: "orderId" })
+  @JoinColumn({ name: "orderOid" })
   order: Order;
 }

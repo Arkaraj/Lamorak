@@ -57,6 +57,13 @@ router.delete(
 
 // get All restaurants
 router.get("/restaurants", auth, isAdmin, adminController.getAllRestaurant);
+// Get specific Restaurant
+router.get(
+  "/restaurants/:Rid",
+  auth,
+  isAdmin,
+  adminController.getSpecificRestaurant
+);
 // get All the foods with ingredients
 router.get("/food", auth, isAdmin, adminController.getAllDishes);
 // get All the foods with ingredients
@@ -100,5 +107,8 @@ router.delete(
 router.get("/order", auth, isAdmin, adminController.ViewAllOrders);
 router.get("/supervision", auth, isAdmin, adminController.ViewAssignedOrders);
 router.put("/order/:Oid", auth, isAdmin, adminController.ControlOrders);
+
+router.post("/delivery", auth, isAdmin, adminController.addDeliveryPerson);
+router.get("/delivery", auth, isAdmin, adminController.ViewDeliveryPerson);
 
 export default router;

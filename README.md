@@ -24,12 +24,20 @@ Backend for Food Delivery App
 - Filter Searches in Menu
 - Order Stages, Types (COD, Net_Banking)
 
+## DB Migrate
+
+```sh
+npx ts-node ./node_modules/.bin/typeorm migration:generate -n DBUpdate
+```
+
 ## ER Diagram
 
 https://drawsql.app/arkaraj/diagrams/lamorak
 
 ## Postman Collections
 
-(not the updated one)
-
 https://www.getpostman.com/collections/fc87e3353fa60710154b
+
+Full Postman Routes (Which are Tested Till Now):
+
+https://documenter.getpostman.com/view/8802598/TzY4gFne

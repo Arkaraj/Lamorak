@@ -64,7 +64,12 @@ export const ViewSpecificOrder = async (orderId: string) => {
 };
 
 export const OrderItems = async (userId: string, method: OrderType) => {
-  const user = await User.findOne(userId);
+  const user = await getRepository(User)
+    .createQueryBuilder("User")
+    .leftJoinAndSelect("User.cart", "cart")
+    .leftJoinAndSelect("User.address", "address")
+    .where("User.uid = :id", { id: userId })
+    .getOne();
 
   const cartPriceArray = user?.cart.map((item) => item.price);
   const totalPrice = cartPriceArray?.reduce((prev, curr) => {
@@ -103,6 +108,10 @@ export const OrderItems = async (userId: string, method: OrderType) => {
       return a.value - b.value;
     });
 
+  console.log("Admin Person", adminPerson);
+  console.log("Del Person", deliveryPerson);
+
+  console.log("Order No.", numOfOrders);
   const indx: number = numOfOrders[0].indx;
 
   newOrder.DPId = deliveryPerson[indx].DPid;
@@ -114,6 +123,9 @@ export const OrderItems = async (userId: string, method: OrderType) => {
   newOrder.adminId = admin.Adminid;
   newOrder.admin = admin;
 
+  // empty cart
+  user!.cart = [];
+  await user?.save();
   await newOrder.save();
 
   // like finally

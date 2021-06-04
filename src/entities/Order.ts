@@ -11,7 +11,6 @@ import {
 import { Admin } from "./Admin";
 import { Delivery_Person } from "./Delivery_Person";
 import { Food } from "./Food";
-import { Restaurant } from "./Restaurant";
 import { User } from "./User";
 
 export enum OrderType {
@@ -44,8 +43,8 @@ export class Order extends BaseEntity {
   @Column()
   uid: string;
 
-  @Column()
-  Rid: string;
+  // @Column()
+  // Rid: string;
 
   @Column()
   adminId: string;
@@ -65,9 +64,9 @@ export class Order extends BaseEntity {
   admin: Admin;
 
   // This is kindda pointless, should be many to many
-  @ManyToOne(() => Restaurant, (rst) => rst.Orders)
-  @JoinColumn({ name: "Rid" })
-  Restaurant: Restaurant;
+  // @ManyToOne(() => Restaurant, (rst) => rst.Orders)
+  // @JoinColumn({ name: "Rid" })
+  // Restaurant: Restaurant;
 
   @ManyToOne(() => Delivery_Person, (DP) => DP.orderId)
   @JoinColumn({ name: "DPId" })
