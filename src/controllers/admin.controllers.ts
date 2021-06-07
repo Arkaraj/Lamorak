@@ -84,12 +84,14 @@ export default {
       Country,
       location,
       pincode,
+      phone,
     }: {
       city: string;
       state: string;
       Country: string;
       location: string;
       pincode: string;
+      phone: string;
     } = req.body;
 
     const addressRepo = getRepository(Address);
@@ -100,6 +102,7 @@ export default {
       Country,
       location,
       pincode,
+      phone,
     });
 
     // const newAddress = addressRepo.create(req.body);
@@ -175,12 +178,14 @@ export default {
       Country,
       location,
       pincode,
+      phone,
     }: {
       city: string;
       state: string;
       Country: string;
       location: string;
       pincode: string;
+      phone: string;
     } = req.body;
 
     const addressRepo = getRepository(Address);
@@ -191,6 +196,7 @@ export default {
       Country,
       location,
       pincode,
+      phone,
     });
 
     // const newAddress = addressRepo.create(req.body);
@@ -221,12 +227,14 @@ export default {
       Country,
       location,
       pincode,
+      phone,
     }: {
       city: string;
       state: string;
       Country: string;
       location: string;
       pincode: string;
+      phone: string;
     } = req.body;
 
     const resturant = await Restaurant.findOne(req.params.restaurantId);
@@ -237,6 +245,7 @@ export default {
         Country,
         location,
         pincode,
+        phone,
       }).save();
 
       resturant.address = address;

@@ -31,6 +31,8 @@ export const addToCart = async (userId: string, foodId: string) => {
 
   food!.userId = userId;
   food!.user = user!;
+  food!.quantity = food!.quantity - 1;
+  food!.available = food!.quantity === 0 ? false : true;
 
   await food!.save();
 
@@ -41,6 +43,8 @@ export const removeFromCart = async (foodId: string) => {
   const food = await Food.findOne(foodId);
 
   food!.userId = null;
+  food!.quantity = food!.quantity + 1;
+  food!.available = true;
 
   await food!.save();
 
@@ -108,10 +112,6 @@ export const OrderItems = async (userId: string, method: OrderType) => {
       return a.value - b.value;
     });
 
-  console.log("Admin Person", adminPerson);
-  console.log("Del Person", deliveryPerson);
-
-  console.log("Order No.", numOfOrders);
   const indx: number = numOfOrders[0].indx;
 
   newOrder.DPId = deliveryPerson[indx].DPid;

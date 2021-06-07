@@ -143,12 +143,14 @@ export default {
       Country,
       location,
       pincode,
+      phone,
     }: {
       city: string;
       state: string;
       Country: string;
       location: string;
       pincode: string;
+      phone: string;
     } = req.body;
 
     const addressRepo = getRepository(Address);
@@ -159,6 +161,7 @@ export default {
       Country,
       location,
       pincode,
+      phone,
     });
 
     // const newAddress = addressRepo.create(req.body);

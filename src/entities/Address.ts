@@ -19,4 +19,7 @@ export class Address extends BaseEntity {
 
   @Column("text")
   pincode: string;
+
+  @Column("varchar2", { nullable: true, length: 9 })
+  phone: string;
 }

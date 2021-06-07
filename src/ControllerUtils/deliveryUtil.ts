@@ -26,7 +26,7 @@ export const orderDelivered = async (orderId: string) => {
   const order = await Order.findOne(orderId);
 
   if (order) {
-    order.status = OrderStatus.PLACED;
+    order.status = OrderStatus.DELIVERED;
     await order.save();
     return order;
   } else {
