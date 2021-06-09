@@ -48,6 +48,7 @@ export const getAllRestaurants = async (): Promise<Restaurant[]> => {
     .leftJoinAndSelect("restaurant.address", "address")
     .getMany();
 };
+
 export const getSpecificRestaurants = async (
   Rid: string
 ): Promise<Restaurant[]> => {

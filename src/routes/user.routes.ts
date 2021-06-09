@@ -19,6 +19,9 @@ router.post("/address", auth, userController.addAddress);
 // Show nearby resturants & food dishes match with address location
 router.get("/menu/show", auth, userController.showUserMenu);
 
+// Shows users the food item they are searching for
+router.post("/menu/show", auth, userController.showUserRequestedDish);
+
 router.get(
   "/resturant/:resturantId",
   auth,

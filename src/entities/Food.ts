@@ -29,12 +29,11 @@ export class Food extends BaseEntity {
   @Column("float")
   price: number;
 
-  @Column("text")
-  restaurantId: string;
-
   @Column("boolean", { default: true })
   available: boolean;
 
+  @Column("text")
+  restaurantId: string;
   @ManyToOne(() => Restaurant, (rest) => rest.items)
   @JoinColumn({ name: "restaurantId" })
   restaurant: Restaurant;
@@ -44,14 +43,12 @@ export class Food extends BaseEntity {
 
   @Column("text", { nullable: true })
   userId: string | null;
-
   @ManyToOne(() => User, (usr) => usr.cart)
   @JoinColumn({ name: "userId" })
   user: User;
 
   @Column("text", { nullable: true })
   orderOid: string | null;
-
   @ManyToOne(() => Order, (order) => order.Items)
   @JoinColumn({ name: "orderOid" })
   order: Order;

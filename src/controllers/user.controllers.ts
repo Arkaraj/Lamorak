@@ -21,6 +21,7 @@ import {
   getSpecificRestaurant,
 } from "../ControllerUtils/restaurantUtils";
 import { queryFoodsIngredients } from "../ControllerUtils/FoodIngredientUtils";
+import { showFoodSearchedFor } from "../ControllerUtils/FoodUtils";
 
 const signToken = (id: string) => {
   return JWT.sign(
@@ -194,6 +195,22 @@ export default {
 
     if (city) {
       const restaurantAndFood = await getRestaurantFoodItemsByCities(city);
+
+      res.status(200).json({ restaurantAndFood });
+    } else {
+      res.status(200).json({ msg: "Please Register your Address" });
+    }
+  },
+  showUserRequestedDish: async (req: any, res: Response) => {
+    // Showcase foods/items based on user's location/city
+
+    const { foodName }: { foodName: string } = req.body;
+    const user = await getUserWithAddress(req);
+
+    const city = user?.address.city;
+
+    if (city) {
+      const restaurantAndFood = await showFoodSearchedFor(foodName, city);
 
       res.status(200).json({ restaurantAndFood });
     } else {
