@@ -24,7 +24,8 @@ export const viewSpecificOrder = async (DPId: string, orderId: string) => {
 
 export const orderDelivered = async (orderId: string) => {
   const order = await Order.findOne(orderId);
-
+  console.log(orderId);
+  console.log(order);
   if (order) {
     order.status = OrderStatus.DELIVERED;
     await order.save();

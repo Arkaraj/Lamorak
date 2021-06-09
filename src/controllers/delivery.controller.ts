@@ -69,7 +69,7 @@ export default {
       });
   },
   orderDelivered: async (req: Request, res: Response) => {
-    const order = await orderDelivered(req.params.OrderId);
+    const order = await orderDelivered(req.params.orderId);
 
     if (order) {
       res.status(200).json({ order });

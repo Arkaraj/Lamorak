@@ -111,4 +111,14 @@ router.put("/order/:Oid", auth, isAdmin, adminController.ControlOrders);
 router.post("/delivery", auth, isAdmin, adminController.addDeliveryPerson);
 router.get("/delivery", auth, isAdmin, adminController.ViewDeliveryPerson);
 
+router.get("/coupon", auth, isAdmin, adminController.viewAllCoupons);
+router.post("/coupon", auth, isAdmin, adminController.addCoupon);
+router.patch("/coupon/:couponId", auth, isAdmin, adminController.changeCoupon);
+router.patch(
+  "/restaurant/:Rid",
+  auth,
+  isAdmin,
+  adminController.changeRestaurantDiscounts
+);
+
 export default router;

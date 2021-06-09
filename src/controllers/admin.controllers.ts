@@ -18,6 +18,8 @@ import { makeItemsChange } from "../ControllerUtils/FoodUtils";
 import { Order, OrderStatus } from "../entities/Order";
 import { ControlOrder, ViewOrderAssigned } from "../ControllerUtils/adminUtils";
 import { Delivery_Person } from "../entities/Delivery_Person";
+import { Coupon } from "../entities/Coupon";
+import { updateCoupon } from "../ControllerUtils/couponUtils";
 
 const signToken = (id: string) => {
   return JWT.sign(
@@ -403,4 +405,31 @@ export default {
 
     res.status(200).json({ Delivery_Person: dperson });
   },
+  viewAllCoupons: async (_req: Request, res: Response) => {
+    const coupon = await Coupon.find();
+
+    res.status(200).json({ coupon });
+  },
+  addCoupon: async (req: Request, res: Response) => {
+    const { title, value } = req.body;
+
+    try {
+      const coupon = await Coupon.create({
+        title,
+        value,
+      }).save();
+
+      res.status(200).json({ coupon });
+    } catch (err) {
+      res.status(500).json({ msg: "Internal Server Error", error: err });
+    }
+  },
+  changeCoupon: async (req: Request, res: Response) => {
+    const { couponId } = req.params;
+
+    const coupon = await updateCoupon(couponId, req.body);
+
+    res.status(200).json({ coupon });
+  },
+  changeRestaurantDiscounts: async (_req: Request, _res: Response) => {},
 };

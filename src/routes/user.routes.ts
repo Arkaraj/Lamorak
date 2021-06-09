@@ -51,4 +51,7 @@ router.get("/order/:OrderId", auth, userController.userViewSpecificOrder);
 // Cancel Order
 router.delete("/order/:OrderId", auth, userController.userCancelSpecificOrder);
 
+// Rate restaurants
+router.patch("/restaurant/:Rid", auth, userController.rateRestaurant);
+
 export default router;

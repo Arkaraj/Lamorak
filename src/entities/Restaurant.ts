@@ -25,6 +25,12 @@ export class Restaurant extends BaseEntity {
   @Column("boolean", { default: true })
   available: boolean;
 
+  @Column("float", { nullable: true })
+  discount: number | null;
+
+  // @Column({ default: 0 })
+  // rating: number;
+
   @OneToMany(() => Food, (food) => food.restaurant)
   items: Food[];
 

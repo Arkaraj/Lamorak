@@ -31,7 +31,7 @@ export class Order extends BaseEntity {
   @PrimaryGeneratedColumn()
   Oid: string;
 
-  @Column({ default: 0.0 })
+  @Column("float", { default: 0.0 })
   totalPrice: number;
 
   @Column({ type: "enum", enum: OrderType, default: OrderType.COD })

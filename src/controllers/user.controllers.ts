@@ -22,6 +22,7 @@ import {
 } from "../ControllerUtils/restaurantUtils";
 import { queryFoodsIngredients } from "../ControllerUtils/FoodIngredientUtils";
 import { showFoodSearchedFor } from "../ControllerUtils/FoodUtils";
+import { Coupon } from "../entities/Coupon";
 
 const signToken = (id: string) => {
   return JWT.sign(
@@ -237,7 +238,11 @@ export default {
 
     const food = await addToCart(userId, foodId);
 
-    res.status(200).json({ food, msg: "Added To Cart" });
+    if (food) {
+      res.status(200).json({ food, msg: "Added To Cart" });
+    } else {
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
   },
   viewCartItems: async (req: any, res: Response) => {
     const user = await getUserCartItems(req);
@@ -264,12 +269,30 @@ export default {
     }
   },
   userOrderFood: async (req: any, res: Response) => {
-    const { orderType } = req.body;
+    const { orderType, couponCode } = req.body;
 
-    const order = await OrderItems(req.user.uid, orderType);
+    if (couponCode) {
+      const coupon = await Coupon.findOne({
+        where: { title: couponCode, valid: true },
+      });
 
-    // This is gonna return massive data of Order items, Admin, Delivery Person, all of them from same city
-    res.status(200).json({ order, msg: "Order Placed" });
+      if (coupon) {
+        coupon.count += 1;
+        await coupon.save();
+        const order = await OrderItems(req.user.uid, orderType, coupon.value);
+        res.status(200).json({
+          order,
+          msg: `Order Placed, Coupon Code found used ${coupon.value}% Discount!`,
+        });
+      } else {
+        res.json({ msg: "Invalid Coupon or Coupon expired" });
+      }
+    } else {
+      const order = await OrderItems(req.user.uid, orderType);
+
+      // This is gonna return massive data of Order items, Admin, Delivery Person, all of them from same city
+      res.status(200).json({ order, msg: "Order Placed" });
+    }
   },
   userGetAllOrders: async (req: any, res: Response) => {
     const order = await ViewOrderedItems(req.user.uid);
@@ -304,4 +327,5 @@ export default {
       });
     }
   },
+  rateRestaurant: async (_req: Request, _res: Response) => {},
 };

@@ -1,6 +1,8 @@
 # Lamorak
 
-Backend for Food Delivery App
+A Smart Backend for Food Delivery App
+
+Live for Fooood!!
 
 🚧🚧 Work in Progress... 🚧🚧
 
@@ -15,13 +17,16 @@ Backend for Food Delivery App
 
 ## What can it Do?
 
-- Same City Menu fetch from all Restaurants
+- View Restaurants, Dishes Nearby you (Same city/address)
+- Filter Choice By price, Restaurants
 - Add To Cart
+- Restaurants Discounts
 - Order Dishes
+- Rate Restaurants
 - Same City Delivery Person/Boy
 - Guided by Admin
 - Cancel Order
-- Filter Searches in Menu
+- Coupon Codes
 - Order Stages, Types (COD, Net_Banking)
 
 ## DB Migrate
@@ -41,3 +46,7 @@ https://www.getpostman.com/collections/fc87e3353fa60710154b
 Full Postman Routes (Which are Tested Till Now):
 
 https://documenter.getpostman.com/view/8802598/TzY4gFne
+
+#### Notes
+
+- Index "city" field in Address Entity to fetch rows easily

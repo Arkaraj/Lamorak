@@ -4,6 +4,7 @@ import { User } from "../entities/User";
 import { Order, OrderStatus, OrderType } from "../entities/Order";
 import { Delivery_Person } from "../entities/Delivery_Person";
 import { Admin } from "../entities/Admin";
+import { Restaurant } from "../entities/Restaurant";
 
 export const getUserWithAddress = async (req: any) => {
   const user = await getRepository(User)
@@ -29,14 +30,24 @@ export const addToCart = async (userId: string, foodId: string) => {
   const food = await Food.findOne(foodId);
   const user = await User.findOne(userId);
 
-  food!.userId = userId;
-  food!.user = user!;
-  food!.quantity = food!.quantity - 1;
-  food!.available = food!.quantity === 0 ? false : true;
+  if (food && user) {
+    food.userId = userId;
+    food.user = user;
+    food.quantity = food.quantity - 1;
+    food.available = food.quantity === 0 ? false : true;
 
-  await food!.save();
+    const restaurant = await Restaurant.findOne(food.restaurantId);
 
-  return food;
+    if (restaurant!.discount) {
+      food.price *= 1 - restaurant!.discount / 100;
+    }
+
+    await food!.save();
+
+    return food;
+  } else {
+    return null;
+  }
 };
 
 export const removeFromCart = async (foodId: string) => {
@@ -67,7 +78,11 @@ export const ViewSpecificOrder = async (orderId: string) => {
     .getOne();
 };
 
-export const OrderItems = async (userId: string, method: OrderType) => {
+export const OrderItems = async (
+  userId: string,
+  method: OrderType,
+  couponValue?: number
+) => {
   const user = await getRepository(User)
     .createQueryBuilder("User")
     .leftJoinAndSelect("User.cart", "cart")
@@ -76,9 +91,13 @@ export const OrderItems = async (userId: string, method: OrderType) => {
     .getOne();
 
   const cartPriceArray = user?.cart.map((item) => item.price);
-  const totalPrice = cartPriceArray?.reduce((prev, curr) => {
+  let totalPrice = cartPriceArray?.reduce((prev, curr) => {
     return prev + curr;
   }, 0);
+
+  if (couponValue) {
+    totalPrice! *= 1 - couponValue / 100;
+  }
 
   const newOrder = Order.create({
     uid: userId,
@@ -94,6 +113,7 @@ export const OrderItems = async (userId: string, method: OrderType) => {
     .leftJoinAndSelect("DP.orderId", "order")
     .where("addr.city = :city", { city: user?.address.city })
     .andWhere("DP.available = :bool", { bool: true })
+    .andWhere("order.status != :orderStatus", { orderStatus: "DELIVERED" })
     .getMany();
 
   const adminPerson = await getRepository(Admin)
