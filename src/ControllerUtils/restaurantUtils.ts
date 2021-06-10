@@ -8,7 +8,8 @@ export const getRestaurantFoodItemsByCities = async (
   req?: any
 ): Promise<Restaurant[] | undefined> => {
   let min = 0,
-    max = 99999999; // Infinity not working
+    max = 99999999,
+    rating = 0; // Infinity not working
 
   if (req.query.min) {
     min = parseInt(req.query.min);
@@ -16,11 +17,16 @@ export const getRestaurantFoodItemsByCities = async (
   if (req.query.max) {
     max = parseInt(req.query.max);
   }
+
+  if (req.query.rating) {
+    rating = parseInt(req.query.rating);
+  }
   const restaurantAndFood = await getRepository(Restaurant)
     .createQueryBuilder("restaurant")
     .leftJoinAndSelect("restaurant.address", "address")
     .leftJoinAndSelect("restaurant.items", "items")
     .where("restaurant.available = :available", { available: true })
+    .andWhere("restaurant.totalRating >= :rating", { rating })
     .andWhere("address.city = :city", { city })
     .andWhere("items.available = :available", { available: true })
     .andWhere("items.price >= :min and items.price <= :max", { min, max })
@@ -93,4 +99,18 @@ export const deleteRestaurant = async (restaurantId: string) => {
   const deletedRestaurant = await Restaurant.delete({ Rid: restaurantId });
 
   return deletedRestaurant;
+};
+
+export const ControlDiscountsInRestaurants = async (
+  restaurantId: string,
+  discount: number
+) => {
+  const restaurant = await Restaurant.findOne(restaurantId);
+  if (restaurant) {
+    restaurant.discount = discount;
+    await restaurant.save();
+    return restaurant;
+  } else {
+    return undefined;
+  }
 };

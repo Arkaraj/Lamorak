@@ -8,6 +8,7 @@ import { getRepository } from "typeorm";
 import { Address } from "../entities/Address";
 import { FoodIngredient } from "../entities/FoodIngredient";
 import {
+  ControlDiscountsInRestaurants,
   deleteRestaurant,
   getAllRestaurants,
   getSpecificRestaurants,
@@ -431,5 +432,16 @@ export default {
 
     res.status(200).json({ coupon });
   },
-  changeRestaurantDiscounts: async (_req: Request, _res: Response) => {},
+  changeRestaurantDiscounts: async (req: Request, res: Response) => {
+    const { Rid } = req.params;
+    const { discount } = req.body;
+
+    const restaurant = await ControlDiscountsInRestaurants(Rid, discount);
+
+    if (restaurant) {
+      res.status(200).json({ restaurant });
+    } else {
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
+  },
 };
