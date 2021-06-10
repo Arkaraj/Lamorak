@@ -18,9 +18,9 @@ Live for Fooood!!
 ## What can it Do?
 
 - View Restaurants, Dishes Nearby you (Same city/address)
-- Filter Choice By price, Restaurants
+- Filter Dishes By Name, price Range and Restaurant's rating
 - Add To Cart
-- Restaurants Discounts
+- Restaurant's Discounts
 - Order Dishes
 - Rate Restaurants
 - Same City Delivery Person/Boy

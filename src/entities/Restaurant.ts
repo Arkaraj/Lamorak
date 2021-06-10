@@ -10,6 +10,7 @@ import {
 import { Address } from "./Address";
 import { Food } from "./Food";
 import { Order } from "./Order";
+import { Rating } from "./Rating";
 
 @Entity()
 export class Restaurant extends BaseEntity {
@@ -28,8 +29,11 @@ export class Restaurant extends BaseEntity {
   @Column("float", { nullable: true })
   discount: number | null;
 
-  // @Column({ default: 0 })
-  // rating: number;
+  @Column("float", { default: 0 })
+  totalRating: number;
+
+  @OneToMany(() => Rating, (r) => r.userId)
+  userRatingConnection: Rating[];
 
   @OneToMany(() => Food, (food) => food.restaurant)
   items: Food[];

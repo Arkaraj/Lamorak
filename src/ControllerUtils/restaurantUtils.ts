@@ -4,8 +4,18 @@ import { Restaurant } from "../entities/Restaurant";
 // import { Food } from "../entities/Food";
 
 export const getRestaurantFoodItemsByCities = async (
-  city: string
+  city: string,
+  req?: any
 ): Promise<Restaurant[] | undefined> => {
+  let min = 0,
+    max = 99999999; // Infinity not working
+
+  if (req.query.min) {
+    min = parseInt(req.query.min);
+  }
+  if (req.query.max) {
+    max = parseInt(req.query.max);
+  }
   const restaurantAndFood = await getRepository(Restaurant)
     .createQueryBuilder("restaurant")
     .leftJoinAndSelect("restaurant.address", "address")
@@ -13,6 +23,7 @@ export const getRestaurantFoodItemsByCities = async (
     .where("restaurant.available = :available", { available: true })
     .andWhere("address.city = :city", { city })
     .andWhere("items.available = :available", { available: true })
+    .andWhere("items.price >= :min and items.price <= :max", { min, max })
     .getMany();
 
   return restaurantAndFood;

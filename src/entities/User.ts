@@ -11,6 +11,7 @@ import { Address } from "./Address";
 import { Food } from "./Food";
 
 import { Order } from "./Order";
+import { Rating } from "./Rating";
 
 @Entity()
 export class User extends BaseEntity {
@@ -39,4 +40,7 @@ export class User extends BaseEntity {
   @OneToOne(() => Address, (addr) => addr.Addressid)
   @JoinColumn()
   address: Address;
+
+  @OneToMany(() => Rating, (r) => r.RestaurantId)
+  restaurantRatingConnection: Rating[];
 }

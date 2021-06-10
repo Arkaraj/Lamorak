@@ -12,6 +12,7 @@ import {
   getUserCartItems,
   getUserWithAddress,
   OrderItems,
+  RateRestaurant,
   removeFromCart,
   ViewOrderedItems,
   ViewSpecificOrder,
@@ -190,15 +191,22 @@ export default {
   showUserMenu: async (req: any, res: Response) => {
     // Showcase foods/items based on user's location/city
 
-    const user = await getUserWithAddress(req);
+    try {
+      const user = await getUserWithAddress(req);
 
-    const city = user?.address.city;
+      const city = user?.address.city;
 
-    if (city) {
-      const restaurantAndFood = await getRestaurantFoodItemsByCities(city);
+      if (city) {
+        const restaurantAndFood = await getRestaurantFoodItemsByCities(
+          city,
+          req
+        );
 
-      res.status(200).json({ restaurantAndFood });
-    } else {
+        res.status(200).json({ restaurantAndFood });
+      } else {
+        res.status(200).json({ msg: "Please Register your Address" });
+      }
+    } catch (err) {
       res.status(200).json({ msg: "Please Register your Address" });
     }
   },
@@ -211,7 +219,7 @@ export default {
     const city = user?.address.city;
 
     if (city) {
-      const restaurantAndFood = await showFoodSearchedFor(foodName, city);
+      const restaurantAndFood = await showFoodSearchedFor(foodName, city, req);
 
       res.status(200).json({ restaurantAndFood });
     } else {
@@ -327,5 +335,17 @@ export default {
       });
     }
   },
-  rateRestaurant: async (_req: Request, _res: Response) => {},
+  rateRestaurant: async (req: any, res: Response) => {
+    const { rating }: { rating: number } = req.body;
+    const rateRestaurant = await RateRestaurant(
+      req.user.uid,
+      req.params.Rid,
+      rating
+    );
+    if (rateRestaurant) {
+      res.status(200).json({ rateRestaurant });
+    } else {
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
+  },
 };

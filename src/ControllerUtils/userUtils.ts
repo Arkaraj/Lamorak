@@ -5,6 +5,7 @@ import { Order, OrderStatus, OrderType } from "../entities/Order";
 import { Delivery_Person } from "../entities/Delivery_Person";
 import { Admin } from "../entities/Admin";
 import { Restaurant } from "../entities/Restaurant";
+import { Rating } from "../entities/Rating";
 
 export const getUserWithAddress = async (req: any) => {
   const user = await getRepository(User)
@@ -163,4 +164,55 @@ export const CancelOrder = async (orderId: string) => {
   await order!.save();
 
   return order;
+};
+
+export const RateRestaurant = async (
+  userId: string,
+  restaurantId: string,
+  rating: number
+) => {
+  const ratingList = await Rating.findOne({
+    where: { RestaurantId: restaurantId, userId },
+  });
+
+  if (ratingList) {
+    ratingList.rating = rating;
+
+    await ratingList.save();
+  } else {
+    const user = await User.findOne(userId);
+    const restaurant = await Restaurant.findOne(restaurantId);
+
+    if (user && restaurant) {
+      await Rating.create({
+        userId,
+        RestaurantId: restaurantId,
+        rating,
+        user,
+        Restaurant: restaurant,
+      }).save();
+    } else {
+      return undefined;
+    }
+  }
+
+  const allRating = await Rating.find({
+    where: { RestaurantId: restaurantId },
+  });
+
+  const hotel = await Restaurant.findOne(restaurantId);
+  const totalRating = allRating
+    .map((item) => item.rating)
+    .reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
+
+  hotel!.totalRating = totalRating / allRating.length;
+  await hotel?.save();
+
+  return {
+    avgRating: totalRating / allRating.length,
+    outOf: allRating.length,
+    hotel,
+  };
 };
