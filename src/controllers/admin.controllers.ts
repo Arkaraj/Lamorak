@@ -17,10 +17,15 @@ import {
 import { queryAllFoodsAlongWithIngredients } from "../ControllerUtils/FoodIngredientUtils";
 import { makeItemsChange } from "../ControllerUtils/FoodUtils";
 import { Order, OrderStatus } from "../entities/Order";
-import { ControlOrder, ViewOrderAssigned } from "../ControllerUtils/adminUtils";
+import {
+  ControlOrder,
+  uploadImagesForFood,
+  ViewOrderAssigned,
+} from "../ControllerUtils/adminUtils";
 import { Delivery_Person } from "../entities/Delivery_Person";
 import { Coupon } from "../entities/Coupon";
 import { updateCoupon } from "../ControllerUtils/couponUtils";
+import { Image } from "../entities/Image";
 
 const signToken = (id: string) => {
   return JWT.sign(
@@ -129,7 +134,7 @@ export default {
         res.status(200).json({ address, restaurant });
       });
   },
-  addDish: async (req: Request, res: Response) => {
+  addDish: async (req: any, res: Response) => {
     const { restaurantId } = req.params;
 
     const {
@@ -144,27 +149,40 @@ export default {
       price: number;
     } = req.body;
 
-    const restaurant = await Restaurant.findOne(restaurantId);
+    try {
+      const restaurant = await Restaurant.findOne(restaurantId);
 
-    if (restaurant) {
-      const food = await Food.create({
-        name,
-        description,
-        quantity,
-        price,
-        restaurantId,
-        IngredientConnection: [],
-        userId: null,
-        orderOid: null,
-      }).save();
-      // food.restaurant = restaurant
-      // await food.save()
+      if (restaurant) {
+        const food = await Food.create({
+          name,
+          description,
+          quantity,
+          price,
+          restaurantId,
+          // IngredientConnection: [],
+          userId: null,
+          orderOid: null,
+          // images
+        }).save();
+        // food.restaurant = restaurant
+        // await food.save()
 
-      food.restaurant = restaurant;
+        let images: Image[] = [];
+        if (req.files) {
+          images = await uploadImagesForFood(req, food);
+        }
 
-      res.status(200).json({ food, restaurant });
-    } else {
-      res.status(500).json({ msg: "Internal Server Error" });
+        food.restaurant = restaurant;
+        await food.save();
+
+        res.status(200).json({ food, restaurant, images });
+      } else {
+        res.status(500).json({ msg: "Internal Server Error" });
+      }
+    } catch (err) {
+      res
+        .status(200)
+        .json({ msg: "Either food is inserted or some error occured" });
     }
   },
   addIngredient: async (req: Request, res: Response) => {

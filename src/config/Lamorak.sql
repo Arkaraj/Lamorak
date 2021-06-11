@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 10, 2021 at 11:47 AM
+-- Generation Time: Jun 11, 2021 at 01:48 PM
 -- Server version: 8.0.19
 -- PHP Version: 7.1.23
 
@@ -138,6 +138,7 @@ CREATE TABLE `food` (
 INSERT INTO `food` (`Fid`, `name`, `description`, `quantity`, `price`, `available`, `restaurantRid`, `userUid`, `restaurantId`, `userId`, `orderOid`) VALUES
 ('116a244d-308e-41a9-9537-97e3f654f4e3', 'Chicken 65', 'Its Chicken 65 what else do you need?', 1, 65, 1, NULL, NULL, '058e4de4-83a6-467a-8e74-a435c7371742', NULL, '2'),
 ('57fb766f-4fd9-44a7-8b19-8582f3720130', 'Chicken 85', 'Its Chicken 85?', 1, 85, 1, NULL, NULL, '058e4de4-83a6-467a-8e74-a435c7371742', NULL, '2'),
+('861ec7be-c07b-4707-9eb2-39ea8aa25e2c', 'Biriyani', 'Its biriyani what else do you need...', 1, 165, 1, NULL, NULL, '614c196f-83af-4b1f-9625-45e0ceae0445', NULL, NULL),
 ('867f3949-7c7f-49c4-8326-2acb17a35c82', 'Meat Soup', 'A soup of human meats, ... i mean animal meats', 1, 165, 1, NULL, NULL, '614c196f-83af-4b1f-9625-45e0ceae0445', NULL, '3');
 
 -- --------------------------------------------------------
@@ -160,6 +161,26 @@ INSERT INTO `food_ingredient` (`FoodId`, `IngredientId`) VALUES
 ('57fb766f-4fd9-44a7-8b19-8582f3720130', '2ebc3f84-4bdc-452d-93d6-de33c6dacae4'),
 ('116a244d-308e-41a9-9537-97e3f654f4e3', '81e203d9-bff9-4dcf-9fa6-44e74f6b3fc2'),
 ('867f3949-7c7f-49c4-8326-2acb17a35c82', '95a03266-171b-4091-8056-05c6930c616e');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `image`
+--
+
+CREATE TABLE `image` (
+  `id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `imagePath` text NOT NULL,
+  `foodId` varchar(36) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `image`
+--
+
+INSERT INTO `image` (`id`, `imagePath`, `foodId`) VALUES
+('78ecb9e8-d804-430d-92c5-7fbae3ef295c', '/uploads/dishes/1623419108721/16234191087211.jpeg', '861ec7be-c07b-4707-9eb2-39ea8aa25e2c'),
+('d042f42b-c12f-4db7-9c4a-3b632d5db443', '/uploads/dishes/1623419108721/16234191087210.jpeg', '861ec7be-c07b-4707-9eb2-39ea8aa25e2c');
 
 -- --------------------------------------------------------
 
@@ -227,16 +248,17 @@ INSERT INTO `order` (`Oid`, `totalPrice`, `type`, `status`, `uid`, `adminId`, `D
 CREATE TABLE `rating` (
   `userId` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `RestaurantId` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `rating` float NOT NULL DEFAULT '0'
+  `rating` float NOT NULL DEFAULT '0',
+  `review` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `rating`
 --
 
-INSERT INTO `rating` (`userId`, `RestaurantId`, `rating`) VALUES
-('d07f6de9-47fa-4c68-9128-846e123c9dd9', '058e4de4-83a6-467a-8e74-a435c7371742', 4),
-('d97729ba-5382-4c8f-b8fa-45ed818a8a30', '058e4de4-83a6-467a-8e74-a435c7371742', 3);
+INSERT INTO `rating` (`userId`, `RestaurantId`, `rating`, `review`) VALUES
+('d07f6de9-47fa-4c68-9128-846e123c9dd9', '058e4de4-83a6-467a-8e74-a435c7371742', 4, NULL),
+('d97729ba-5382-4c8f-b8fa-45ed818a8a30', '058e4de4-83a6-467a-8e74-a435c7371742', 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -293,7 +315,8 @@ INSERT INTO `user` (`uid`, `email`, `userName`, `password`, `balance`, `addressA
 -- Indexes for table `address`
 --
 ALTER TABLE `address`
-  ADD PRIMARY KEY (`Addressid`);
+  ADD PRIMARY KEY (`Addressid`),
+  ADD KEY `Addressid` (`Addressid`);
 
 --
 -- Indexes for table `admin`
@@ -330,6 +353,13 @@ ALTER TABLE `food`
 ALTER TABLE `food_ingredient`
   ADD PRIMARY KEY (`FoodId`,`IngredientId`),
   ADD KEY `FK_b335b1a8e5221d9f0d79dae5f42` (`IngredientId`);
+
+--
+-- Indexes for table `image`
+--
+ALTER TABLE `image`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `ImageForFood` (`foodId`);
 
 --
 -- Indexes for table `ingredient`
@@ -420,6 +450,12 @@ ALTER TABLE `food`
 ALTER TABLE `food_ingredient`
   ADD CONSTRAINT `FK_b2786654cafd09256c540749b9a` FOREIGN KEY (`FoodId`) REFERENCES `food` (`Fid`),
   ADD CONSTRAINT `FK_b335b1a8e5221d9f0d79dae5f42` FOREIGN KEY (`IngredientId`) REFERENCES `ingredient` (`Ingid`);
+
+--
+-- Constraints for table `image`
+--
+ALTER TABLE `image`
+  ADD CONSTRAINT `ImageForFood` FOREIGN KEY (`foodId`) REFERENCES `food` (`Fid`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `order`

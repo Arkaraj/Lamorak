@@ -336,11 +336,16 @@ export default {
     }
   },
   rateRestaurant: async (req: any, res: Response) => {
-    const { rating }: { rating: number } = req.body;
+    const {
+      rating,
+      review,
+    }: { rating: number; review: string | undefined } = req.body;
+
     const rateRestaurant = await RateRestaurant(
       req.user.uid,
       req.params.Rid,
-      rating
+      rating,
+      review
     );
     if (rateRestaurant) {
       res.status(200).json({ rateRestaurant });

@@ -21,6 +21,9 @@ export class Rating extends BaseEntity {
   @Column("float", { default: 0 })
   rating: number;
 
+  @Column("text", { nullable: true })
+  review: string | null;
+
   @ManyToOne(() => User, (usr) => usr.restaurantRatingConnection, {
     primary: true,
   })

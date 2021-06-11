@@ -2,6 +2,9 @@ import express from "express";
 const router = express.Router();
 import passport from "passport";
 import "../middlewares/isAuth";
+import multer from "multer";
+
+const upload = multer();
 
 const auth = passport.authenticate("jwt", { session: false });
 
@@ -26,6 +29,7 @@ router.post(
   "/createFood/:restaurantId",
   auth,
   isAdmin,
+  upload.array("photos", 4), // 4 images of the food Item
   adminController.addDish
 );
 router.post("/createIngredient", auth, isAdmin, adminController.addIngredient);

@@ -169,7 +169,8 @@ export const CancelOrder = async (orderId: string) => {
 export const RateRestaurant = async (
   userId: string,
   restaurantId: string,
-  rating: number
+  rating: number,
+  review?: string
 ) => {
   const ratingList = await Rating.findOne({
     where: { RestaurantId: restaurantId, userId },
@@ -177,7 +178,10 @@ export const RateRestaurant = async (
 
   if (ratingList) {
     ratingList.rating = rating;
-
+    ratingList.review = null;
+    if (review) {
+      ratingList.review = review;
+    }
     await ratingList.save();
   } else {
     const user = await User.findOne(userId);
@@ -190,6 +194,7 @@ export const RateRestaurant = async (
         rating,
         user,
         Restaurant: restaurant,
+        review: review ? review : null,
       }).save();
     } else {
       return undefined;

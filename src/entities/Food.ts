@@ -8,6 +8,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { FoodIngredient } from "./FoodIngredient";
+import { Image } from "./Image";
 import { Order } from "./Order";
 import { Restaurant } from "./Restaurant";
 import { User } from "./User";
@@ -31,6 +32,9 @@ export class Food extends BaseEntity {
 
   @Column("boolean", { default: true })
   available: boolean;
+
+  @OneToMany(() => Image, (img) => img.food)
+  images: Image[];
 
   @Column("text")
   restaurantId: string;
